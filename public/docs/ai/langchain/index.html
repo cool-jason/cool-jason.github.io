@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="LangChain：用于构建大语言模型应用的开源框架及核心模块解析# LangChain 是一个用于构建大语言模型（LLM）应用的开源框架，核心目标是连接 LLM 与外部资源、简化端到端工作流，其模块设计围绕“数据输入-模型交互-逻辑编排-输出落地”的全链路展开。以下是 LangChain 的核心模块及详细说明：
+一、核心基础模块（Models）# 负责集成各类 AI 模型，是所有功能的“动力源”，支持主流模型提供商的无缝对接。
+1. 语言模型（LLMs）# 作用：处理文本生成、理解等核心任务（非对话式）。
+支持类型：
+闭源模型：OpenAI（GPT-3.5/4）、Anthropic（Claude）、Google（PaLM 2）、AWS（Bedrock）等；
+开源模型：Llama 2、Falcon、Mistral、LlamaCpp（本地部署）等。
+核心功能：文本生成、摘要、翻译、逻辑推理等。
+2. 聊天模型（Chat Models）# 作用：专门处理对话式交互（基于“消息”而非纯文本输入）。
+特点：输入是 ChatMessage 列表（如 HumanMessage、AIMessage、SystemMessage），输出是结构化的对话响应。
+支持：OpenAI ChatGPT、Anthropic Claude 2、Google Gemini Chat、开源聊天模型（如 ChatGLM）等。
+3. 嵌入模型（Embedding Models）# 作用：将文本转换为数值向量（嵌入向量），用于语义检索、相似度计算等。
+支持：OpenAI Embeddings、Cohere Embeddings、Hugging Face 开源嵌入模型（如 BERT、Sentence-BERT）、本地部署的嵌入模型（如 all-MiniLM-L6-v2）。
+4. 工具模型（Tool-calling Models）# 作用：支持模型主动调用外部工具（如搜索、数据库查询），是“代理（Agent）”功能的基础。
+代表：OpenAI Function Calling、Anthropic Tool Use、Google Gemini Function Calling 等。
+二、提示工程模块（Prompts）# 负责管理与模型的“交互语言”，优化提示质量以提升模型输出效果，是连接用户需求与模型的桥梁。
+1. 提示模板（Prompt Templates）# 作用：标准化提示格式，支持动态插入变量（如用户输入、上下文数据）。
+示例：问答模板 “基于以下上下文回答问题：{context}\n问题：{question}”。
+扩展功能：
+少样本模板（Few-shot Templates）：插入示例提升模型效果；
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/docs/ai/langchain/">
+  <meta property="og:site_name" content="Cool Jason">
+  <meta property="og:title" content="LangChain">
+  <meta property="og:description" content="LangChain：用于构建大语言模型应用的开源框架及核心模块解析# LangChain 是一个用于构建大语言模型（LLM）应用的开源框架，核心目标是连接 LLM 与外部资源、简化端到端工作流，其模块设计围绕“数据输入-模型交互-逻辑编排-输出落地”的全链路展开。以下是 LangChain 的核心模块及详细说明：
+一、核心基础模块（Models）# 负责集成各类 AI 模型，是所有功能的“动力源”，支持主流模型提供商的无缝对接。
+1. 语言模型（LLMs）# 作用：处理文本生成、理解等核心任务（非对话式）。
+支持类型：
+闭源模型：OpenAI（GPT-3.5/4）、Anthropic（Claude）、Google（PaLM 2）、AWS（Bedrock）等；
+开源模型：Llama 2、Falcon、Mistral、LlamaCpp（本地部署）等。
+核心功能：文本生成、摘要、翻译、逻辑推理等。
+2. 聊天模型（Chat Models）# 作用：专门处理对话式交互（基于“消息”而非纯文本输入）。
+特点：输入是 ChatMessage 列表（如 HumanMessage、AIMessage、SystemMessage），输出是结构化的对话响应。
+支持：OpenAI ChatGPT、Anthropic Claude 2、Google Gemini Chat、开源聊天模型（如 ChatGLM）等。
+3. 嵌入模型（Embedding Models）# 作用：将文本转换为数值向量（嵌入向量），用于语义检索、相似度计算等。
+支持：OpenAI Embeddings、Cohere Embeddings、Hugging Face 开源嵌入模型（如 BERT、Sentence-BERT）、本地部署的嵌入模型（如 all-MiniLM-L6-v2）。
+4. 工具模型（Tool-calling Models）# 作用：支持模型主动调用外部工具（如搜索、数据库查询），是“代理（Agent）”功能的基础。
+代表：OpenAI Function Calling、Anthropic Tool Use、Google Gemini Function Calling 等。
+二、提示工程模块（Prompts）# 负责管理与模型的“交互语言”，优化提示质量以提升模型输出效果，是连接用户需求与模型的桥梁。
+1. 提示模板（Prompt Templates）# 作用：标准化提示格式，支持动态插入变量（如用户输入、上下文数据）。
+示例：问答模板 “基于以下上下文回答问题：{context}\n问题：{question}”。
+扩展功能：
+少样本模板（Few-shot Templates）：插入示例提升模型效果；">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="website">
+
+
+  <meta itemprop="name" content="LangChain">
+  <meta itemprop="description" content="LangChain：用于构建大语言模型应用的开源框架及核心模块解析# LangChain 是一个用于构建大语言模型（LLM）应用的开源框架，核心目标是连接 LLM 与外部资源、简化端到端工作流，其模块设计围绕“数据输入-模型交互-逻辑编排-输出落地”的全链路展开。以下是 LangChain 的核心模块及详细说明：
+一、核心基础模块（Models）# 负责集成各类 AI 模型，是所有功能的“动力源”，支持主流模型提供商的无缝对接。
+1. 语言模型（LLMs）# 作用：处理文本生成、理解等核心任务（非对话式）。
+支持类型：
+闭源模型：OpenAI（GPT-3.5/4）、Anthropic（Claude）、Google（PaLM 2）、AWS（Bedrock）等；
+开源模型：Llama 2、Falcon、Mistral、LlamaCpp（本地部署）等。
+核心功能：文本生成、摘要、翻译、逻辑推理等。
+2. 聊天模型（Chat Models）# 作用：专门处理对话式交互（基于“消息”而非纯文本输入）。
+特点：输入是 ChatMessage 列表（如 HumanMessage、AIMessage、SystemMessage），输出是结构化的对话响应。
+支持：OpenAI ChatGPT、Anthropic Claude 2、Google Gemini Chat、开源聊天模型（如 ChatGLM）等。
+3. 嵌入模型（Embedding Models）# 作用：将文本转换为数值向量（嵌入向量），用于语义检索、相似度计算等。
+支持：OpenAI Embeddings、Cohere Embeddings、Hugging Face 开源嵌入模型（如 BERT、Sentence-BERT）、本地部署的嵌入模型（如 all-MiniLM-L6-v2）。
+4. 工具模型（Tool-calling Models）# 作用：支持模型主动调用外部工具（如搜索、数据库查询），是“代理（Agent）”功能的基础。
+代表：OpenAI Function Calling、Anthropic Tool Use、Google Gemini Function Calling 等。
+二、提示工程模块（Prompts）# 负责管理与模型的“交互语言”，优化提示质量以提升模型输出效果，是连接用户需求与模型的桥梁。
+1. 提示模板（Prompt Templates）# 作用：标准化提示格式，支持动态插入变量（如用户输入、上下文数据）。
+示例：问答模板 “基于以下上下文回答问题：{context}\n问题：{question}”。
+扩展功能：
+少样本模板（Few-shot Templates）：插入示例提升模型效果；">
+  <meta itemprop="datePublished" content="2025-12-06T00:00:00+00:00">
+  <meta itemprop="dateModified" content="2025-12-06T00:00:00+00:00">
+  <meta itemprop="wordCount" content="365">
+  <meta itemprop="keywords" content="AI">
+
+<title>LangChain | Cool Jason</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/docs/ai/langchain/">
+<link rel="stylesheet" href="/book.min.cc2c524ed250aac81b23d1f4af87344917b325208841feca0968fe450f570575.css" integrity="sha256-zCxSTtJQqsgbI9H0r4c0SRezJSCIQf7KCWj&#43;RQ9XBXU=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.4f2a21d3e45a251d63f6cb416a07518b5de31748a71b5215da11194ae50a16ef.js" integrity="sha256-Tyoh0&#43;RaJR1j9stBagdRi13jF0inG1IV2hEZSuUKFu8=" crossorigin="anonymous"></script>
+
+
+<link rel="alternate" type="application/rss+xml" href="http://localhost:1313/docs/ai/langchain/index.xml" title="Cool Jason" />
+
+  
+</head>
+<body dir="ltr" class="book-kind-section book-type-docs">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>Cool Jason</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <ul>
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a>
+      AI&amp;大模型</a>
+  
+
+          
+  <ul>
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/rag/" class="">
+      RAG</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li>
+          
+  
+  
+
+  
+    <a href="/docs/ai/langchain/" class="active">
+      LangChain</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+        </li>
+      
+    
+      
+        <li class="book-section-flat" >
+          
+  
+  
+
+  
+    <a href="/docs/blog-build/" class="">
+      MacOS下搭建Hugo博客</a>
+  
+
+          
+  <ul>
+    
+  </ul>
+
+        </li>
+      
+    
+  </ul>
+
+
+
+
+
+
+
+
+
+
+<ul><li><a href="/posts/" title="Blog">Blog</a></li><li><a href="https://github.com/cool-jason" target="_blank" rel="noopener">Github</a></li></ul>
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>LangChain</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#一核心基础模块models">一、核心基础模块（Models）</a></li>
+        <li><a href="#二提示工程模块prompts">二、提示工程模块（Prompts）</a></li>
+        <li><a href="#三数据连接模块data-connection">三、数据连接模块（Data Connection）</a></li>
+        <li><a href="#四工作流编排模块chains">四、工作流编排模块（Chains）</a></li>
+        <li><a href="#五智能代理模块agents">五、智能代理模块（Agents）</a></li>
+        <li><a href="#六上下文记忆模块memory">六、上下文记忆模块（Memory）</a></li>
+        <li><a href="#七部署与监控模块callbacks--observability">七、部署与监控模块（Callbacks &amp; Observability）</a></li>
+        <li><a href="#八生态集成模块integrations">八、生态集成模块（Integrations）</a></li>
+        <li><a href="#模块关系总结">模块关系总结</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h1 id="langchain用于构建大语言模型应用的开源框架及核心模块解析">LangChain：用于构建大语言模型应用的开源框架及核心模块解析<a class="anchor" href="#langchain%e7%94%a8%e4%ba%8e%e6%9e%84%e5%bb%ba%e5%a4%a7%e8%af%ad%e8%a8%80%e6%a8%a1%e5%9e%8b%e5%ba%94%e7%94%a8%e7%9a%84%e5%bc%80%e6%ba%90%e6%a1%86%e6%9e%b6%e5%8f%8a%e6%a0%b8%e5%bf%83%e6%a8%a1%e5%9d%97%e8%a7%a3%e6%9e%90">#</a></h1>
+<p>LangChain 是一个用于构建大语言模型（LLM）应用的开源框架，核心目标是<strong>连接 LLM 与外部资源、简化端到端工作流</strong>，其模块设计围绕“数据输入-模型交互-逻辑编排-输出落地”的全链路展开。以下是 LangChain 的核心模块及详细说明：</p>
+<h3 id="一核心基础模块models">一、核心基础模块（Models）<a class="anchor" href="#%e4%b8%80%e6%a0%b8%e5%bf%83%e5%9f%ba%e7%a1%80%e6%a8%a1%e5%9d%97models">#</a></h3>
+<p>负责集成各类 AI 模型，是所有功能的“动力源”，支持主流模型提供商的无缝对接。</p>
+<h4 id="1-语言模型llms">1. 语言模型（LLMs）<a class="anchor" href="#1-%e8%af%ad%e8%a8%80%e6%a8%a1%e5%9e%8bllms">#</a></h4>
+<ul>
+<li>
+<p><strong>作用</strong>：处理文本生成、理解等核心任务（非对话式）。</p>
+</li>
+<li>
+<p><strong>支持类型</strong>：</p>
+<ul>
+<li>
+<p>闭源模型：OpenAI（GPT-3.5/4）、Anthropic（Claude）、Google（PaLM 2）、AWS（Bedrock）等；</p>
+</li>
+<li>
+<p>开源模型：Llama 2、Falcon、Mistral、LlamaCpp（本地部署）等。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>核心功能</strong>：文本生成、摘要、翻译、逻辑推理等。</p>
+</li>
+</ul>
+<h4 id="2-聊天模型chat-models">2. 聊天模型（Chat Models）<a class="anchor" href="#2-%e8%81%8a%e5%a4%a9%e6%a8%a1%e5%9e%8bchat-models">#</a></h4>
+<ul>
+<li>
+<p><strong>作用</strong>：专门处理对话式交互（基于“消息”而非纯文本输入）。</p>
+</li>
+<li>
+<p><strong>特点</strong>：输入是 <code>ChatMessage</code> 列表（如 <code>HumanMessage</code>、<code>AIMessage</code>、<code>SystemMessage</code>），输出是结构化的对话响应。</p>
+</li>
+<li>
+<p><strong>支持</strong>：OpenAI ChatGPT、Anthropic Claude 2、Google Gemini Chat、开源聊天模型（如 ChatGLM）等。</p>
+</li>
+</ul>
+<h4 id="3-嵌入模型embedding-models">3. 嵌入模型（Embedding Models）<a class="anchor" href="#3-%e5%b5%8c%e5%85%a5%e6%a8%a1%e5%9e%8bembedding-models">#</a></h4>
+<ul>
+<li>
+<p><strong>作用</strong>：将文本转换为数值向量（嵌入向量），用于语义检索、相似度计算等。</p>
+</li>
+<li>
+<p><strong>支持</strong>：OpenAI Embeddings、Cohere Embeddings、Hugging Face 开源嵌入模型（如 BERT、Sentence-BERT）、本地部署的嵌入模型（如 all-MiniLM-L6-v2）。</p>
+</li>
+</ul>
+<h4 id="4-工具模型tool-calling-models">4. 工具模型（Tool-calling Models）<a class="anchor" href="#4-%e5%b7%a5%e5%85%b7%e6%a8%a1%e5%9e%8btool-calling-models">#</a></h4>
+<ul>
+<li>
+<p><strong>作用</strong>：支持模型主动调用外部工具（如搜索、数据库查询），是“代理（Agent）”功能的基础。</p>
+</li>
+<li>
+<p><strong>代表</strong>：OpenAI Function Calling、Anthropic Tool Use、Google Gemini Function Calling 等。</p>
+</li>
+</ul>
+<h3 id="二提示工程模块prompts">二、提示工程模块（Prompts）<a class="anchor" href="#%e4%ba%8c%e6%8f%90%e7%a4%ba%e5%b7%a5%e7%a8%8b%e6%a8%a1%e5%9d%97prompts">#</a></h3>
+<p>负责管理与模型的“交互语言”，优化提示质量以提升模型输出效果，是连接用户需求与模型的桥梁。</p>
+<h4 id="1-提示模板prompt-templates">1. 提示模板（Prompt Templates）<a class="anchor" href="#1-%e6%8f%90%e7%a4%ba%e6%a8%a1%e6%9d%bfprompt-templates">#</a></h4>
+<ul>
+<li>
+<p><strong>作用</strong>：标准化提示格式，支持动态插入变量（如用户输入、上下文数据）。</p>
+</li>
+<li>
+<p><strong>示例</strong>：问答模板 <code>“基于以下上下文回答问题：{context}\n问题：{question}”</code>。</p>
+</li>
+<li>
+<p><strong>扩展功能</strong>：</p>
+<ul>
+<li>
+<p>少样本模板（Few-shot Templates）：插入示例提升模型效果；</p>
+</li>
+<li>
+<p>聊天模板（Chat Templates）：适配聊天模型的消息格式；</p>
+</li>
+<li>
+<p>动态模板：根据条件切换提示逻辑（如 <code>ConditionalPromptTemplate</code>）。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-示例选择器example-selectors">2. 示例选择器（Example Selectors）<a class="anchor" href="#2-%e7%a4%ba%e4%be%8b%e9%80%89%e6%8b%a9%e5%99%a8example-selectors">#</a></h4>
+<ul>
+<li>
+<p><strong>作用</strong>：从示例库中动态选择最相关的样本插入提示，优化少样本学习效果。</p>
+</li>
+<li>
+<p><strong>常见类型</strong>：基于相似度选择、基于长度限制选择、随机选择等。</p>
+</li>
+</ul>
+<h4 id="3-提示序列化prompt-serialization">3. 提示序列化（Prompt Serialization）<a class="anchor" href="#3-%e6%8f%90%e7%a4%ba%e5%ba%8f%e5%88%97%e5%8c%96prompt-serialization">#</a></h4>
+<ul>
+<li><strong>作用</strong>：将提示模板保存为文件（如 JSON、YAML），支持复用、共享和版本控制（配合 LangChain Hub）。</li>
+</ul>
+<h4 id="4-输出解析器output-parsers">4. 输出解析器（Output Parsers）<a class="anchor" href="#4-%e8%be%93%e5%87%ba%e8%a7%a3%e6%9e%90%e5%99%a8output-parsers">#</a></h4>
+<ul>
+<li>
+<p><strong>作用</strong>：将模型的非结构化输出转换为结构化数据（如 JSON、类实例、列表），方便后续处理。</p>
+</li>
+<li>
+<p><strong>常见类型</strong>：</p>
+<ul>
+<li>
+<p><code>JsonOutputParser</code>：强制模型输出 JSON 格式；</p>
+</li>
+<li>
+<p><code>PydanticOutputParser</code>：基于 Pydantic 模型定义输出结构；</p>
+</li>
+<li>
+<p><code>ListOutputParser</code>：输出列表格式数据。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="三数据连接模块data-connection">三、数据连接模块（Data Connection）<a class="anchor" href="#%e4%b8%89%e6%95%b0%e6%8d%ae%e8%bf%9e%e6%8e%a5%e6%a8%a1%e5%9d%97data-connection">#</a></h3>
+<p>负责对接外部数据（文档、数据库、API 等），解决 LLM“知识过时”“无法访问私有数据”的问题，是构建知识增强型应用的核心。</p>
+<h4 id="1-文档加载器document-loaders">1. 文档加载器（Document Loaders）<a class="anchor" href="#1-%e6%96%87%e6%a1%a3%e5%8a%a0%e8%bd%bd%e5%99%a8document-loaders">#</a></h4>
+<ul>
+<li>
+<p><strong>作用</strong>：从各类数据源加载数据并转换为统一的 <code>Document</code> 格式（包含文本内容和元数据）。</p>
+</li>
+<li>
+<p><strong>支持数据源</strong>：</p>
+<ul>
+<li>
+<p>本地文件：TXT、PDF、Word、Excel、Markdown 等；</p>
+</li>
+<li>
+<p>网络资源：网页（URL）、RSS 订阅、GitHub 仓库；</p>
+</li>
+<li>
+<p>数据库：SQL（MySQL、PostgreSQL）、MongoDB、Redis；</p>
+</li>
+<li>
+<p>云服务：S3、Google Drive、Notion、Slack、Confluence 等。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-文档分割器text-splitters">2. 文档分割器（Text Splitters）<a class="anchor" href="#2-%e6%96%87%e6%a1%a3%e5%88%86%e5%89%b2%e5%99%a8text-splitters">#</a></h4>
+<ul>
+<li>
+<p><strong>作用</strong>：将长文档分割为短文本块（适配 LLM 上下文窗口限制），同时保留语义完整性。</p>
+</li>
+<li>
+<p><strong>常见策略</strong>：</p>
+<ul>
+<li>
+<p>按字符/单词长度分割（<code>RecursiveCharacterTextSplitter</code>，默认推荐）；</p>
+</li>
+<li>
+<p>按语义分割（<code>SentenceTransformersTokenTextSplitter</code>，基于嵌入相似度）；</p>
+</li>
+<li>
+<p>按结构分割（如 Markdown 标题、PDF 页面）。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-向量存储vector-stores">3. 向量存储（Vector Stores）<a class="anchor" href="#3-%e5%90%91%e9%87%8f%e5%ad%98%e5%82%a8vector-stores">#</a></h4>
+<ul>
+<li>
+<p><strong>作用</strong>：存储文档嵌入向量，支持高效的语义检索（如相似性查询）。</p>
+</li>
+<li>
+<p><strong>支持类型</strong>：</p>
+<ul>
+<li>
+<p>本地/轻量：Chroma（默认推荐）、FAISS、SQLite-Vector；</p>
+</li>
+<li>
+<p>企业级：Pinecone、Weaviate、Milvus、Qdrant、Redis Vector；</p>
+</li>
+<li>
+<p>云服务：AWS OpenSearch、Google Cloud Vertex AI Vector Search。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="4-检索器retrievers">4. 检索器（Retrievers）<a class="anchor" href="#4-%e6%a3%80%e7%b4%a2%e5%99%a8retrievers">#</a></h4>
+<ul>
+<li>
+<p><strong>作用</strong>：封装向量存储的检索逻辑，提供统一的检索接口（如 <code>retrieve(query)</code>），支持复杂检索策略。</p>
+</li>
+<li>
+<p><strong>常见类型</strong>：</p>
+<ul>
+<li>
+<p>基础检索：相似性检索（<code>SimilarityRetriever</code>）；</p>
+</li>
+<li>
+<p>高级检索：混合检索（向量+关键词）、上下文感知检索、多轮检索（<code>MultiQueryRetriever</code>）；</p>
+</li>
+<li>
+<p>自定义检索：基于规则/数据库查询的检索器。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="5-文档转换器document-transformers">5. 文档转换器（Document Transformers）<a class="anchor" href="#5-%e6%96%87%e6%a1%a3%e8%bd%ac%e6%8d%a2%e5%99%a8document-transformers">#</a></h4>
+<ul>
+<li>
+<p><strong>作用</strong>：对加载的文档进行预处理（如清洗、格式转换、信息提取）。</p>
+</li>
+<li>
+<p><strong>示例</strong>：去除冗余文本、提取 PDF 表格、转换 HTML 为纯文本、基于 LLM 提炼文档关键信息。</p>
+</li>
+</ul>
+<h3 id="四工作流编排模块chains">四、工作流编排模块（Chains）<a class="anchor" href="#%e5%9b%9b%e5%b7%a5%e4%bd%9c%e6%b5%81%e7%bc%96%e6%8e%92%e6%a8%a1%e5%9d%97chains">#</a></h3>
+<p>将单个组件（模型、提示、检索器等）串联为有序工作流，实现复杂任务的自动化执行（核心模块之一）。</p>
+<h4 id="1-基础链simple-chains">1. 基础链（Simple Chains）<a class="anchor" href="#1-%e5%9f%ba%e7%a1%80%e9%93%besimple-chains">#</a></h4>
+<ul>
+<li>
+<p><strong>作用</strong>：线性串联少量组件，如“提示模板 → LLM → 输出解析器”。</p>
+</li>
+<li>
+<p><strong>示例</strong>：<code>LLMChain</code>（最基础，直接调用 LLM）、<code>ChatChain</code>（适配聊天模型）。</p>
+</li>
+</ul>
+<h4 id="2-组合链composite-chains">2. 组合链（Composite Chains）<a class="anchor" href="#2-%e7%bb%84%e5%90%88%e9%93%becomposite-chains">#</a></h4>
+<ul>
+<li>
+<p><strong>作用</strong>：串联多个基础链，支持分支、并行或循环逻辑。</p>
+</li>
+<li>
+<p><strong>常见类型</strong>：</p>
+<ul>
+<li>
+<p><code>SequentialChain</code>：线性执行多个链（前一个链的输出作为后一个链的输入）；</p>
+</li>
+<li>
+<p><code>RouterChain</code>：根据输入动态选择执行哪个链（如“问答链”或“总结链”）；</p>
+</li>
+<li>
+<p><code>ParallelChain</code>：并行执行多个链，合并输出结果。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-预构建链pre-built-chains">3. 预构建链（Pre-built Chains）<a class="anchor" href="#3-%e9%a2%84%e6%9e%84%e5%bb%ba%e9%93%bepre-built-chains">#</a></h4>
+<ul>
+<li>
+<p><strong>作用</strong>：针对常见场景封装现成链，开箱即用。</p>
+</li>
+<li>
+<p><strong>典型场景</strong>：</p>
+<ul>
+<li>
+<p>问答（QA）：<code>RetrievalQA</code>（检索增强问答，“检索器+LLM”）、<code>ConversationalRetrievalChain</code>（带对话记忆的问答）；</p>
+</li>
+<li>
+<p>总结：<code>StuffDocumentsChain</code>（单文档总结）、<code>MapReduceChain</code>（长文档分块总结+合并）；</p>
+</li>
+<li>
+<p>翻译：<code>TranslationChain</code>；</p>
+</li>
+<li>
+<p>代码生成：<code>CodeChain</code>。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="4-链序列化chain-serialization">4. 链序列化（Chain Serialization）<a class="anchor" href="#4-%e9%93%be%e5%ba%8f%e5%88%97%e5%8c%96chain-serialization">#</a></h4>
+<ul>
+<li><strong>作用</strong>：将链保存为文件（JSON/YAML），支持复用、共享和部署（配合 LangServe）。</li>
+</ul>
+<h3 id="五智能代理模块agents">五、智能代理模块（Agents）<a class="anchor" href="#%e4%ba%94%e6%99%ba%e8%83%bd%e4%bb%a3%e7%90%86%e6%a8%a1%e5%9d%97agents">#</a></h3>
+<p>让模型具备“自主决策能力”：根据用户需求，自主选择工具、调用链、调整策略，无需人工预设固定工作流（高级功能）。</p>
+<h4 id="1-代理核心agent-cores">1. 代理核心（Agent Cores）<a class="anchor" href="#1-%e4%bb%a3%e7%90%86%e6%a0%b8%e5%bf%83agent-cores">#</a></h4>
+<ul>
+<li>
+<p><strong>作用</strong>：定义代理的决策逻辑（如“如何选择工具”“何时终止任务”）。</p>
+</li>
+<li>
+<p><strong>常见类型</strong>：</p>
+<ul>
+<li>
+<p>基于 LLM 思维链（ReAct）：<code>ReActAgent</code>（通过自然语言推理选择工具）；</p>
+</li>
+<li>
+<p>基于工具调用：<code>OpenAIFunctionsAgent</code>（利用模型的工具调用能力，更稳定）；</p>
+</li>
+<li>
+<p>无工具代理：<code>ConversationalAgent</code>（仅依赖模型和记忆进行对话）。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-工具tools">2. 工具（Tools）<a class="anchor" href="#2-%e5%b7%a5%e5%85%b7tools">#</a></h4>
+<ul>
+<li>
+<p><strong>作用</strong>：代理可调用的外部能力集合，是代理与现实世界交互的接口。</p>
+</li>
+<li>
+<p><strong>内置工具</strong>：</p>
+<ul>
+<li>
+<p>搜索工具：Google Search、Bing Search、SerpAPI；</p>
+</li>
+<li>
+<p>数据库工具：SQL 查询（<code>SQLDatabaseToolkit</code>）、MongoDB 查询；</p>
+</li>
+<li>
+<p>文件工具：读取/写入文件、处理 CSV；</p>
+</li>
+<li>
+<p>代码工具：执行 Python 代码（<code>PythonREPLTool</code>）、计算；</p>
+</li>
+<li>
+<p>其他：发送邮件、调用 API、地图查询。</p>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>自定义工具</strong>：通过 <code>@tool</code> 装饰器或继承 <code>BaseTool</code> 类快速定义。</p>
+</li>
+</ul>
+<h4 id="3-工具包toolkits">3. 工具包（Toolkits）<a class="anchor" href="#3-%e5%b7%a5%e5%85%b7%e5%8c%85toolkits">#</a></h4>
+<ul>
+<li>
+<p><strong>作用</strong>：封装一组相关工具，适配特定场景（如数据库操作、数据分析）。</p>
+</li>
+<li>
+<p><strong>示例</strong>：<code>SQLDatabaseToolkit</code>（包含查询、表结构查看等工具）、<code>DataAnalysisToolkit</code>（包含 Pandas 分析、可视化工具）。</p>
+</li>
+</ul>
+<h3 id="六上下文记忆模块memory">六、上下文记忆模块（Memory）<a class="anchor" href="#%e5%85%ad%e4%b8%8a%e4%b8%8b%e6%96%87%e8%ae%b0%e5%bf%86%e6%a8%a1%e5%9d%97memory">#</a></h3>
+<p>用于保存对话历史或任务上下文，让链/代理具备“长期记忆”能力（如多轮对话中记住用户之前的提问）。</p>
+<h4 id="1-基础记忆base-memory">1. 基础记忆（Base Memory）<a class="anchor" href="#1-%e5%9f%ba%e7%a1%80%e8%ae%b0%e5%bf%86base-memory">#</a></h4>
+<ul>
+<li>
+<p><strong>作用</strong>：存储简单的对话历史（如 <code>ChatMessage</code> 列表）。</p>
+</li>
+<li>
+<p><strong>示例</strong>：<code>ConversationBufferMemory</code>（完整保存对话历史）、<code>ConversationSummaryMemory</code>（用 LLM 总结对话历史，节省上下文空间）。</p>
+</li>
+</ul>
+<h4 id="2-高级记忆advanced-memory">2. 高级记忆（Advanced Memory）<a class="anchor" href="#2-%e9%ab%98%e7%ba%a7%e8%ae%b0%e5%bf%86advanced-memory">#</a></h4>
+<ul>
+<li>
+<p><strong>作用</strong>：支持复杂上下文管理（如实体记忆、关键信息提取）。</p>
+</li>
+<li>
+<p><strong>常见类型</strong>：</p>
+<ul>
+<li>
+<p><code>ConversationBufferWindowMemory</code>（仅保存最近 N 轮对话）；</p>
+</li>
+<li>
+<p><code>ConversationEntityMemory</code>（提取对话中的实体及关系，如“用户姓名、偏好”）；</p>
+</li>
+<li>
+<p><code>VectorStoreMemory</code>（将对话历史存储在向量库中，支持语义检索）；</p>
+</li>
+<li>
+<p><code>RedisChatMessageHistory</code>（将记忆存储在 Redis 中，支持分布式部署）。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-记忆集成">3. 记忆集成<a class="anchor" href="#3-%e8%ae%b0%e5%bf%86%e9%9b%86%e6%88%90">#</a></h4>
+<ul>
+<li>可直接集成到 <code>Chain</code> 或 <code>Agent</code> 中，通过 <code>memory</code> 参数指定，自动管理上下文。</li>
+</ul>
+<h3 id="七部署与监控模块callbacks--observability">七、部署与监控模块（Callbacks &amp; Observability）<a class="anchor" href="#%e4%b8%83%e9%83%a8%e7%bd%b2%e4%b8%8e%e7%9b%91%e6%8e%a7%e6%a8%a1%e5%9d%97callbacks--observability">#</a></h3>
+<p>支持应用的部署、日志监控、调试优化，适配生产环境需求。</p>
+<h4 id="1-回调系统callbacks">1. 回调系统（Callbacks）<a class="anchor" href="#1-%e5%9b%9e%e8%b0%83%e7%b3%bb%e7%bb%9fcallbacks">#</a></h4>
+<ul>
+<li>
+<p><strong>作用</strong>：在链/代理执行过程中触发钩子函数，用于日志记录、监控、数据收集。</p>
+</li>
+<li>
+<p><strong>常见回调</strong>：</p>
+<ul>
+<li>
+<p>日志回调：记录输入、输出、执行时间；</p>
+</li>
+<li>
+<p>监控回调：集成 Prometheus、Grafana 监控性能；</p>
+</li>
+<li>
+<p>调试回调：输出链/代理的执行步骤（如“调用了哪个工具”“生成了什么提示”）。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-langsmith可观测性平台">2. LangSmith（可观测性平台）<a class="anchor" href="#2-langsmith%e5%8f%af%e8%a7%82%e6%b5%8b%e6%80%a7%e5%b9%b3%e5%8f%b0">#</a></h4>
+<ul>
+<li>
+<p><strong>作用</strong>：LangChain 官方提供的调试、监控、评估平台，支持：</p>
+<ul>
+<li>
+<p>追踪链/代理的执行链路（可视化工作流）；</p>
+</li>
+<li>
+<p>记录输入输出、中间结果、错误信息；</p>
+</li>
+<li>
+<p>评估模型/链的性能（如准确率、响应时间）；</p>
+</li>
+<li>
+<p>版本控制（提示、链、代理的迭代管理）。</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-langserve部署工具">3. LangServe（部署工具）<a class="anchor" href="#3-langserve%e9%83%a8%e7%bd%b2%e5%b7%a5%e5%85%b7">#</a></h4>
+<ul>
+<li>
+<p><strong>作用</strong>：将链/代理快速部署为 REST API 服务，支持高并发、负载均衡。</p>
+</li>
+<li>
+<p><strong>特点</strong>：基于 FastAPI 构建，支持自动生成 OpenAPI 文档，适配 Docker/K8s 部署。</p>
+</li>
+</ul>
+<h4 id="4-langchain-hub共享平台">4. LangChain Hub（共享平台）<a class="anchor" href="#4-langchain-hub%e5%85%b1%e4%ba%ab%e5%b9%b3%e5%8f%b0">#</a></h4>
+<ul>
+<li><strong>作用</strong>：共享和复用提示模板、链、代理配置（如公开的 QA 链、总结模板），支持版本控制。</li>
+</ul>
+<h3 id="八生态集成模块integrations">八、生态集成模块（Integrations）<a class="anchor" href="#%e5%85%ab%e7%94%9f%e6%80%81%e9%9b%86%e6%88%90%e6%a8%a1%e5%9d%97integrations">#</a></h3>
+<p>LangChain 核心优势之一是丰富的第三方集成，覆盖数据存储、工具、云服务等，无需重复造轮子。</p>
+<h4 id="1-模型集成">1. 模型集成<a class="anchor" href="#1-%e6%a8%a1%e5%9e%8b%e9%9b%86%e6%88%90">#</a></h4>
+<ul>
+<li>覆盖主流 LLM 提供商（OpenAI、Anthropic、Google、AWS、Azure、阿里云、腾讯云等）。</li>
+</ul>
+<h4 id="2-数据存储集成">2. 数据存储集成<a class="anchor" href="#2-%e6%95%b0%e6%8d%ae%e5%ad%98%e5%82%a8%e9%9b%86%e6%88%90">#</a></h4>
+<ul>
+<li>
+<p>数据库：SQL（MySQL、PostgreSQL）、NoSQL（MongoDB、Redis）、向量库（Pinecone、Weaviate 等）；</p>
+</li>
+<li>
+<p>文件存储：S3、Google Drive、Dropbox、本地文件系统。</p>
+</li>
+</ul>
+<h4 id="3-工具集成">3. 工具集成<a class="anchor" href="#3-%e5%b7%a5%e5%85%b7%e9%9b%86%e6%88%90">#</a></h4>
+<ul>
+<li>
+<p>搜索：Google、Bing、SerpAPI、Tavily；</p>
+</li>
+<li>
+<p>办公软件：Notion、Slack、Confluence、Microsoft 365；</p>
+</li>
+<li>
+<p>开发工具：GitHub、GitLab、Docker、Kubernetes；</p>
+</li>
+<li>
+<p>其他：支付接口（Stripe）、地图（Google Maps）、邮件（SMTP）。</p>
+</li>
+</ul>
+<h4 id="4-框架集成">4. 框架集成<a class="anchor" href="#4-%e6%a1%86%e6%9e%b6%e9%9b%86%e6%88%90">#</a></h4>
+<ul>
+<li>
+<p>Web 框架：FastAPI、Flask、Django；</p>
+</li>
+<li>
+<p>数据科学：Pandas、NumPy、Matplotlib；</p>
+</li>
+<li>
+<p>深度学习：Hugging Face Transformers、PyTorch、TensorFlow。</p>
+</li>
+</ul>
+<h3 id="模块关系总结">模块关系总结<a class="anchor" href="#%e6%a8%a1%e5%9d%97%e5%85%b3%e7%b3%bb%e6%80%bb%e7%bb%93">#</a></h3>
+<p>LangChain 的模块遵循“<strong>输入（数据连接）→ 处理（提示+模型）→ 编排（链/代理）→ 记忆（上下文）→ 输出（部署）</strong> ”的逻辑闭环：</p>
+<ul>
+<li>
+<p>数据连接模块解决“数据从哪来”；</p>
+</li>
+<li>
+<p>提示+模型模块解决“如何与 AI 交互”；</p>
+</li>
+<li>
+<p>链+代理模块解决“如何自动化完成复杂任务”；</p>
+</li>
+<li>
+<p>记忆模块解决“如何保留上下文”；</p>
+</li>
+<li>
+<p>部署模块解决“如何落地到生产”。</p>
+</li>
+</ul>
+<p>通过这些模块的灵活组合，可快速构建问答系统、聊天机器人、数据分析工具、自动化办公流程等各类 LLM 应用。</p>
+<blockquote class='book-hint '>
+<p>（注：文档部分内容可能由 AI 生成）</p>
+</blockquote></article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+<div>
+
+</div>
+
+<div>
+
+</div>
+
+</div>
+
+
+
+
+
+  
+  
+  
+  <div class="flex flex-wrap justify-between">
+    <span>
+    
+      <a href="/docs/ai/rag/" class="flex align-center">
+        <img src="/icons/backward.svg" class="book-icon" alt="Backward" />
+        <span>RAG</span>
+      </a>
+    
+    </span>
+    <span>
+    
+      <a href="/docs/example/table-of-contents/" class="flex align-center">
+        <span>Table of Contents</span>
+        <img src="/icons/forward.svg" class="book-icon" alt="Forward" />
+      </a>
+    
+    </span>
+  </div>
+  
+
+
+ 
+        
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#一核心基础模块models">一、核心基础模块（Models）</a></li>
+        <li><a href="#二提示工程模块prompts">二、提示工程模块（Prompts）</a></li>
+        <li><a href="#三数据连接模块data-connection">三、数据连接模块（Data Connection）</a></li>
+        <li><a href="#四工作流编排模块chains">四、工作流编排模块（Chains）</a></li>
+        <li><a href="#五智能代理模块agents">五、智能代理模块（Agents）</a></li>
+        <li><a href="#六上下文记忆模块memory">六、上下文记忆模块（Memory）</a></li>
+        <li><a href="#七部署与监控模块callbacks--observability">七、部署与监控模块（Callbacks &amp; Observability）</a></li>
+        <li><a href="#八生态集成模块integrations">八、生态集成模块（Integrations）</a></li>
+        <li><a href="#模块关系总结">模块关系总结</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

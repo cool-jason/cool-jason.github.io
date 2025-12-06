@@ -1,0 +1,16 @@
+baseURL = 'https://example.org/'
+languageCode = 'zh-cn'
+title = 'Cool Jason'
+theme = "hugo-book"
+
+[module]
+[[module.imports]]
+path = 'github.com/alex-shpak/hugo-book'
+[menu]
+[[menu.after]]
+  name = 'Github'
+  url = 'https://github.com/cool-jason'
+  weight = 10
+
+[params]
+BookSearch = true

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cool Jason</title>
+    <link>http://localhost:1313/docs/ai%E5%A4%A7%E6%A8%A1%E5%9E%8B/</link>
+    <description>Recent content on Cool Jason</description>
+    <generator>Hugo</generator>
+    <language>zh-cn</language>
+    <atom:link href="http://localhost:1313/docs/ai%E5%A4%A7%E6%A8%A1%E5%9E%8B/index.xml" rel="self" type="application/rss+xml" />
+  </channel>
+</rss>

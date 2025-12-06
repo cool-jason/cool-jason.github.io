@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-cn" dir="ltr">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+  <!--
+Made with Book Theme
+https://github.com/alex-shpak/hugo-book
+-->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="个人站与博客园同步方案# 要实现「一份博客源码，同时支持个人站 &#43; 博客园发布」，核心思路是 「统一内容源 &#43; 格式兼容处理 &#43; 双端发布自动化」。结合技术博客的特性（Markdown 优先、代码高亮、图片展示），推荐以下方案，兼顾灵活性、易用性和维护效率：
+一、整体架构设计# 核心逻辑：用 Markdown 作为唯一内容源（存储在 Git 仓库），通过「静态博客框架」构建个人站，再通过「格式转换 &#43; 自动化工具」同步到博客园，避免重复编辑。
+（图床统一存储图片，双端共用）
+关键选型# 组件 推荐方案 核心作用 个人博客框架 Hugo（优先）/ Hexo / Jekyll 快速生成静态博客，支持自定义主题、代码高亮 内容存储 Git 仓库（GitHub/Gitee） 版本控制，统一管理 Markdown 源码 图片存储 图床（PicGo &#43; 阿里云 OSS/GitHub 图床） 统一图片链接，双端均可访问 格式兼容处理 Pandoc &#43; 自定义脚本 解决 Markdown 语法差异（如代码块、表格） 博客园同步工具 cnblog-publisher（Python 库）/ 手动插件 自动推送 Markdown 到博客园后台 个人站部署 GitHub Pages / Vercel / Netlify 免费托管静态博客，支持自定义域名 二、分步实现指南# 第一步：搭建个人博客（以 Hugo 为例，最快上手）# Hugo 是Go 编写的静态框架，构建速度极快，支持 Markdown 原生语法，适合技术博客。
+">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#ffffff">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#343a40">
+<meta name="color-scheme" content="light dark"><meta property="og:url" content="http://localhost:1313/dev-tool/test1/">
+  <meta property="og:site_name" content="CoolJason">
+  <meta property="og:title" content="test1">
+  <meta property="og:description" content="个人站与博客园同步方案# 要实现「一份博客源码，同时支持个人站 &#43; 博客园发布」，核心思路是 「统一内容源 &#43; 格式兼容处理 &#43; 双端发布自动化」。结合技术博客的特性（Markdown 优先、代码高亮、图片展示），推荐以下方案，兼顾灵活性、易用性和维护效率：
+一、整体架构设计# 核心逻辑：用 Markdown 作为唯一内容源（存储在 Git 仓库），通过「静态博客框架」构建个人站，再通过「格式转换 &#43; 自动化工具」同步到博客园，避免重复编辑。
+（图床统一存储图片，双端共用）
+关键选型# 组件 推荐方案 核心作用 个人博客框架 Hugo（优先）/ Hexo / Jekyll 快速生成静态博客，支持自定义主题、代码高亮 内容存储 Git 仓库（GitHub/Gitee） 版本控制，统一管理 Markdown 源码 图片存储 图床（PicGo &#43; 阿里云 OSS/GitHub 图床） 统一图片链接，双端均可访问 格式兼容处理 Pandoc &#43; 自定义脚本 解决 Markdown 语法差异（如代码块、表格） 博客园同步工具 cnblog-publisher（Python 库）/ 手动插件 自动推送 Markdown 到博客园后台 个人站部署 GitHub Pages / Vercel / Netlify 免费托管静态博客，支持自定义域名 二、分步实现指南# 第一步：搭建个人博客（以 Hugo 为例，最快上手）# Hugo 是Go 编写的静态框架，构建速度极快，支持 Markdown 原生语法，适合技术博客。">
+  <meta property="og:locale" content="zh_cn">
+  <meta property="og:type" content="article">
+    <meta property="article:section" content="dev-tool">
+    <meta property="article:published_time" content="2025-12-06T14:20:11+08:00">
+    <meta property="article:modified_time" content="2025-12-06T14:20:11+08:00">
+
+
+  <meta itemprop="name" content="test1">
+  <meta itemprop="description" content="个人站与博客园同步方案# 要实现「一份博客源码，同时支持个人站 &#43; 博客园发布」，核心思路是 「统一内容源 &#43; 格式兼容处理 &#43; 双端发布自动化」。结合技术博客的特性（Markdown 优先、代码高亮、图片展示），推荐以下方案，兼顾灵活性、易用性和维护效率：
+一、整体架构设计# 核心逻辑：用 Markdown 作为唯一内容源（存储在 Git 仓库），通过「静态博客框架」构建个人站，再通过「格式转换 &#43; 自动化工具」同步到博客园，避免重复编辑。
+（图床统一存储图片，双端共用）
+关键选型# 组件 推荐方案 核心作用 个人博客框架 Hugo（优先）/ Hexo / Jekyll 快速生成静态博客，支持自定义主题、代码高亮 内容存储 Git 仓库（GitHub/Gitee） 版本控制，统一管理 Markdown 源码 图片存储 图床（PicGo &#43; 阿里云 OSS/GitHub 图床） 统一图片链接，双端均可访问 格式兼容处理 Pandoc &#43; 自定义脚本 解决 Markdown 语法差异（如代码块、表格） 博客园同步工具 cnblog-publisher（Python 库）/ 手动插件 自动推送 Markdown 到博客园后台 个人站部署 GitHub Pages / Vercel / Netlify 免费托管静态博客，支持自定义域名 二、分步实现指南# 第一步：搭建个人博客（以 Hugo 为例，最快上手）# Hugo 是Go 编写的静态框架，构建速度极快，支持 Markdown 原生语法，适合技术博客。">
+  <meta itemprop="datePublished" content="2025-12-06T14:20:11+08:00">
+  <meta itemprop="dateModified" content="2025-12-06T14:20:11+08:00">
+  <meta itemprop="wordCount" content="350">
+
+<title>test1 | CoolJason</title>
+<link rel="icon" href="/favicon.png" >
+<link rel="manifest" href="/manifest.json">
+<link rel="canonical" href="http://localhost:1313/dev-tool/test1/">
+<link rel="stylesheet" href="/book.min.cc2c524ed250aac81b23d1f4af87344917b325208841feca0968fe450f570575.css" integrity="sha256-zCxSTtJQqsgbI9H0r4c0SRezJSCIQf7KCWj&#43;RQ9XBXU=" crossorigin="anonymous">
+
+
+  <script defer src="/fuse.min.js"></script>
+  <script defer src="/en.search.min.f518f0821ecdc0f45eeb9d33250370ef9b403a1f9fcf3f7e53d7fda6b0fc5578.js" integrity="sha256-9Rjwgh7NwPRe650zJQNw75tAOh&#43;fzz9&#43;U9f9prD8VXg=" crossorigin="anonymous"></script>
+
+
+
+  
+</head>
+<body dir="ltr" class="book-kind-page book-type-dev-tool">
+  <input type="checkbox" class="hidden toggle" id="menu-control" />
+  <input type="checkbox" class="hidden toggle" id="toc-control" />
+  <main class="container flex">
+    
+<aside class="book-menu">
+  <div class="book-menu-content">
+    
+  <nav>
+<h2 class="book-brand">
+  <a class="flex align-center" href="/"><span>CoolJason</span>
+  </a>
+</h2>
+
+
+<div class="book-search hidden">
+  <input id="book-search-input" type="text" 
+    placeholder="Search"
+    aria-label="Search"
+    maxlength="64" data-hotkeys="s/" />
+  <div class="book-search-spinner hidden"></div>
+  <ul id="book-search-results"></ul>
+</div>
+<script>document.querySelector(".book-search").classList.remove("hidden")</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<ul><li><a href="/posts/" title="Blog">Blog</a></li></ul>
+
+
+
+
+</nav>
+
+
+
+
+  <script>(function(){var e=document.querySelector("aside .book-menu-content");addEventListener("beforeunload",function(){localStorage.setItem("menu.scrollTop",e.scrollTop)}),e.scrollTop=localStorage.getItem("menu.scrollTop")})()</script>
+
+
+
+  </div>
+</aside>
+ 
+
+    <div class="book-page">
+      <header class="book-header hidden">
+        
+  <div class="flex align-center justify-between">
+  <label for="menu-control">
+    <img src="/icons/menu.svg" class="book-icon" alt="Menu" />
+  </label>
+
+  <h3>test1</h3>
+
+  <label for="toc-control">
+    
+    <img src="/icons/toc.svg" class="book-icon" alt="Table of Contents" />
+    
+  </label>
+</div>
+
+
+  
+  <aside class="hidden">
+    
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#一整体架构设计">一、整体架构设计</a>
+      <ul>
+        <li><a href="#关键选型">关键选型</a></li>
+      </ul>
+    </li>
+    <li><a href="#二分步实现指南">二、分步实现指南</a>
+      <ul>
+        <li><a href="#第一步搭建个人博客以-hugo-为例最快上手">第一步：搭建个人博客（以 Hugo 为例，最快上手）</a></li>
+        <li><a href="#第二步统一内容源与格式兼容">第二步：统一内容源与格式兼容</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+  </aside>
+  
+ 
+      </header>
+
+      
+      
+  <article class="markdown book-article"><h1 id="个人站与博客园同步方案">个人站与博客园同步方案<a class="anchor" href="#%e4%b8%aa%e4%ba%ba%e7%ab%99%e4%b8%8e%e5%8d%9a%e5%ae%a2%e5%9b%ad%e5%90%8c%e6%ad%a5%e6%96%b9%e6%a1%88">#</a></h1>
+<p>要实现「一份博客源码，同时支持个人站 + 博客园发布」，核心思路是 <strong>「统一内容源 + 格式兼容处理 + 双端发布自动化」</strong>。结合技术博客的特性（Markdown 优先、代码高亮、图片展示），推荐以下方案，兼顾灵活性、易用性和维护效率：</p>
+<h2 id="一整体架构设计">一、整体架构设计<a class="anchor" href="#%e4%b8%80%e6%95%b4%e4%bd%93%e6%9e%b6%e6%9e%84%e8%ae%be%e8%ae%a1">#</a></h2>
+<p>核心逻辑：用 <strong>Markdown 作为唯一内容源</strong>（存储在 Git 仓库），通过「静态博客框架」构建个人站，再通过「格式转换 + 自动化工具」同步到博客园，避免重复编辑。</p>
+<p>（图床统一存储图片，双端共用）</p>
+<h3 id="关键选型">关键选型<a class="anchor" href="#%e5%85%b3%e9%94%ae%e9%80%89%e5%9e%8b">#</a></h3>
+<table>
+  <thead>
+      <tr>
+          <th>组件</th>
+          <th>推荐方案</th>
+          <th>核心作用</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>个人博客框架</td>
+          <td>Hugo（优先）/ Hexo / Jekyll</td>
+          <td>快速生成静态博客，支持自定义主题、代码高亮</td>
+      </tr>
+      <tr>
+          <td>内容存储</td>
+          <td>Git 仓库（GitHub/Gitee）</td>
+          <td>版本控制，统一管理 Markdown 源码</td>
+      </tr>
+      <tr>
+          <td>图片存储</td>
+          <td>图床（PicGo + 阿里云 OSS/GitHub 图床）</td>
+          <td>统一图片链接，双端均可访问</td>
+      </tr>
+      <tr>
+          <td>格式兼容处理</td>
+          <td>Pandoc + 自定义脚本</td>
+          <td>解决 Markdown 语法差异（如代码块、表格）</td>
+      </tr>
+      <tr>
+          <td>博客园同步工具</td>
+          <td>cnblog-publisher（Python 库）/ 手动插件</td>
+          <td>自动推送 Markdown 到博客园后台</td>
+      </tr>
+      <tr>
+          <td>个人站部署</td>
+          <td>GitHub Pages / Vercel / Netlify</td>
+          <td>免费托管静态博客，支持自定义域名</td>
+      </tr>
+  </tbody>
+</table>
+<h2 id="二分步实现指南">二、分步实现指南<a class="anchor" href="#%e4%ba%8c%e5%88%86%e6%ad%a5%e5%ae%9e%e7%8e%b0%e6%8c%87%e5%8d%97">#</a></h2>
+<h3 id="第一步搭建个人博客以-hugo-为例最快上手">第一步：搭建个人博客（以 Hugo 为例，最快上手）<a class="anchor" href="#%e7%ac%ac%e4%b8%80%e6%ad%a5%e6%90%ad%e5%bb%ba%e4%b8%aa%e4%ba%ba%e5%8d%9a%e5%ae%a2%e4%bb%a5-hugo-%e4%b8%ba%e4%be%8b%e6%9c%80%e5%bf%ab%e4%b8%8a%e6%89%8b">#</a></h3>
+<p>Hugo 是Go 编写的静态框架，构建速度极快，支持 Markdown 原生语法，适合技术博客。</p>
+<h4 id="1-环境准备">1. 环境准备<a class="anchor" href="#1-%e7%8e%af%e5%a2%83%e5%87%86%e5%a4%87">#</a></h4>
+<ul>
+<li>安装 Hugo：<code>brew install hugo</code>（Mac）/ 官网下载（Windows/Linux）</li>
+<li>初始化博客：
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>hugo new site my-blog <span style="color:#f92672">&amp;&amp;</span> cd my-blog
+</span></span><span style="display:flex;"><span>git init  <span style="color:#75715e"># 初始化 Git 仓库（后续管理 Markdown 源码）</span></span></span></code></pre></div></li>
+</ul>
+</li>
+<li>选择主题（推荐技术博客主题）：
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span><span style="color:#75715e"># 示例：安装 LoveIt 主题（支持代码高亮、数学公式、目录）</span>
+</span></span><span style="display:flex;"><span>git submodule add https://github.com/dillonzq/LoveIt.git themes/LoveIt</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>配置 <code>config.toml</code>（主题配置、站点信息、自定义域名等，参考主题文档）。</li>
+</ul>
+<h4 id="2-编写博客规范">2. 编写博客规范<a class="anchor" href="#2-%e7%bc%96%e5%86%99%e5%8d%9a%e5%ae%a2%e8%a7%84%e8%8c%83">#</a></h4>
+<ul>
+<li>所有博客放在 <code>content/posts/</code> 目录下，文件格式为 <code>xxx.md</code>。</li>
+<li>统一使用 <strong>Front Matter</strong> 定义元信息（双端共用），示例：
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Markdown" data-lang="Markdown"><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>title: &#34;Go 并发编程之 Goroutine 原理&#34;  # 标题（双端共用）
+</span></span><span style="display:flex;"><span>date: 2025-12-03T10:00:00+08:00       # 发布时间
+</span></span><span style="display:flex;"><span>tags: [&#34;Go&#34;, &#34;并发&#34;]                   # 标签（博客园同步时自动提取）
+</span></span><span style="display:flex;"><span>categories: [&#34;技术总结&#34;]               # 分类（博客园同步时自动提取）
+</span></span><span style="display:flex;"><span>draft: false                           # 是否草稿（个人站不发布草稿，同步时过滤）
+</span></span><span style="display:flex;"><span>description: &#34;深入讲解 Goroutine 的调度模型和使用场景&#34;  # 摘要
+</span></span><span style="display:flex;"><span>---
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span># 正文内容（标准 Markdown 语法）
+</span></span><span style="display:flex;"><span>这是博客正文，支持：
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">-</span> 代码块（``<span style="color:#e6db74">`go ... `</span>``）
+</span></span><span style="display:flex;"><span><span style="color:#66d9ef">-</span> 图片（）
+</span></span><span style="display:flex;"><span>- 表格、数学公式等</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>本地预览：<code>hugo server -D</code>，访问 <code>http://localhost:1313</code> 查看效果。</li>
+</ul>
+<h4 id="3-部署个人站到-github-pages">3. 部署个人站到 GitHub Pages<a class="anchor" href="#3-%e9%83%a8%e7%bd%b2%e4%b8%aa%e4%ba%ba%e7%ab%99%e5%88%b0-github-pages">#</a></h4>
+<ul>
+<li>生成静态文件：<code>hugo</code>（输出到 <code>public/</code> 目录）。</li>
+<li>关联 GitHub 仓库（新建 <code>my-blog</code> 仓库），推送源码：
+<ul>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-Bash" data-lang="Bash"><span style="display:flex;"><span>git add . <span style="color:#f92672">&amp;&amp;</span> git commit -m <span style="color:#e6db74">&#34;初始化博客&#34;</span>
+</span></span><span style="display:flex;"><span>git remote add origin https://github.com/你的用户名/my-blog.git
+</span></span><span style="display:flex;"><span>git push -u origin main</span></span></code></pre></div></li>
+</ul>
+</li>
+<li>自动化部署（GitHub Actions）：
+<ul>
+<li>在博客根目录创建 <code>.github/workflows/deploy.yml</code>，内容如下：
+<ol>
+<li>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-YAML" data-lang="YAML"><span style="display:flex;"><span><span style="color:#f92672">name</span>: <span style="color:#ae81ff">Deploy Hugo Site to GitHub Pages</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">on</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">push</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">branches</span>: [<span style="color:#ae81ff">main] </span> <span style="color:#75715e"># 推送 main 分支时触发</span>
+</span></span><span style="display:flex;"><span><span style="color:#f92672">jobs</span>:
+</span></span><span style="display:flex;"><span>  <span style="color:#f92672">deploy</span>:
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">runs-on</span>: <span style="color:#ae81ff">ubuntu-latest</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#f92672">steps</span>:
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">actions/checkout@v4</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">with</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">submodules</span>: <span style="color:#66d9ef">true</span>  <span style="color:#75715e"># 拉取主题子模块</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">fetch-depth</span>: <span style="color:#ae81ff">0</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Setup Hugo</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">peaceiris/actions-hugo@v3</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">with</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">hugo-version</span>: <span style="color:#e6db74">&#34;latest&#34;</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Build</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">run</span>: <span style="color:#ae81ff">hugo --minify </span> <span style="color:#75715e"># 构建静态文件</span>
+</span></span><span style="display:flex;"><span>      - <span style="color:#f92672">name</span>: <span style="color:#ae81ff">Deploy</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">uses</span>: <span style="color:#ae81ff">peaceiris/actions-gh-pages@v4</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#f92672">with</span>:
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">github_token</span>: <span style="color:#ae81ff">${{ secrets.GITHUB_TOKEN }}</span>
+</span></span><span style="display:flex;"><span>          <span style="color:#f92672">publish_dir</span>: <span style="color:#ae81ff">./public </span> <span style="color:#75715e"># 部署 public 目录到 gh-pages 分支</span></span></span></code></pre></div></li>
+</ol>
+</li>
+<li>推送后，GitHub 会自动构建并部署到 <code>用户名.github.io/my-blog</code>，也可绑定自定义域名（在仓库 <code>Settings -&gt; Pages</code> 配置）。</li>
+</ul>
+</li>
+</ul>
+<h3 id="第二步统一内容源与格式兼容">第二步：统一内容源与格式兼容<a class="anchor" href="#%e7%ac%ac%e4%ba%8c%e6%ad%a5%e7%bb%9f%e4%b8%80%e5%86%85%e5%ae%b9%e6%ba%90%e4%b8%8e%e6%a0%bc%e5%bc%8f%e5%85%bc%e5%ae%b9">#</a></h3>
+<p>核心目标：让 Markdown 同时适配「个人站（Hugo）」和「博客园」，避免语法差异导致的格式错乱。</p>
+<h4 id="1-图片统一存储图床">1. 图片统一存储（图床）<a class="anchor" href="#1-%e5%9b%be%e7%89%87%e7%bb%9f%e4%b8%80%e5%ad%98%e5%82%a8%e5%9b%be%e5%ba%8a">#</a></h4>
+<ul>
+<li>问题：本地图片路径（<code>../images/xxx.png</code>）在博客园无法访问。</li>
+<li>解决方案：使用图床，将图片上传后获取「公开绝对链接」，Markdown 中直接引用。</li>
+<li>工具：PicGo（桌面端），支持一键上传到阿里云 OSS、GitHub 图床、<a href="SM.MS">SM.MS</a> 等。
+<ul>
+<li>配置示例（GitHub 图床）：
+<ul>
+<li>新建 GitHub 仓库（如 <code>blog-images</code>），生成 Personal Access Token（勾选 <code>repo</code> 权限）。</li>
+<li>PicGo 中选择「GitHub 图床」，填写仓库名、分支、Token、存储路径（如 <code>2025/12/</code>）。</li>
+</ul>
+</li>
+<li>使用：截图后复制到剪贴板，PicGo 自动上传并生成链接，直接粘贴到 Markdown。</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-markdown-语法兼容处理">2. Markdown 语法兼容处理<a class="anchor" href="#2-markdown-%e8%af%ad%e6%b3%95%e5%85%bc%e5%ae%b9%e5%a4%84%e7%90%86">#</a></h4>
+<p>博客园支持 Markdown 但有部分语法差异，需统一为「双端兼容语法」：</p>
+<table>
+  <thead>
+      <tr>
+          <th>场景</th>
+          <th>兼容写法（双端通用）</th>
+          <th>避免写法（仅个人站支持）</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr>
+          <td>代码块</td>
+          <td><code>go func main() {} </code></td>
+          <td>{% codeblock lang:go %}&hellip;{% endcodeblock %}（Hugo 短代码）</td>
+      </tr>
+      <tr>
+          <td>表格</td>
+          <td>标准 Markdown 表格（`</td>
+          <td>表头</td>
+      </tr>
+      <tr>
+          <td>数学公式</td>
+          <td>用 <code>$E=mc^2$</code>（Hugo 需启用 MathJax，博客园后台开启「数学公式支持」）</td>
+          <td>Hugo 专属数学公式短代码</td>
+      </tr>
+      <tr>
+          <td>目录</td>
+          <td>博客园自动生成（无需写 ），个人站用（主题支持）</td>
+          <td>直接写 （双端行为不一致）</td>
+      </tr>
+  </tbody>
+</table>
+<h4 id="3-格式转换脚本可选解决复杂场景">3. 格式转换脚本（可选，解决复杂场景）<a class="anchor" href="#3-%e6%a0%bc%e5%bc%8f%e8%bd%ac%e6%8d%a2%e8%84%9a%e6%9c%ac%e5%8f%af%e9%80%89%e8%a7%a3%e5%86%b3%e5%a4%8d%e6%9d%82%e5%9c%ba%e6%99%af">#</a></h4>
+<p>如果需要使用 Hugo 专属短代码（如高亮块、警告框），可通过脚本转换为博客园支持的 HTML 格式。示例：</p>
+</article>
+ 
+      
+
+      <footer class="book-footer">
+        
+  <div class="flex flex-wrap justify-between">
+
+<div>
+
+</div>
+
+<div>
+
+</div>
+
+</div>
+
+
+
+
+
+
+
+ 
+        
+  
+  <div class="book-comments">
+
+</div>
+  
+ 
+        
+        
+  
+ 
+        
+  
+  
+    <script>(function(){document.querySelectorAll("pre:has(code)").forEach(e=>{e.addEventListener("click",e.focus),e.addEventListener("copy",function(t){if(t.preventDefault(),navigator.clipboard){const t=window.getSelection().toString()||e.textContent;navigator.clipboard.writeText(t)}})})})()</script>
+  
+
+      </footer>
+
+      <label for="menu-control" class="hidden book-menu-overlay"></label>
+    </div>
+
+    
+  
+  <aside class="book-toc">
+    <div class="book-toc-content">
+      
+  
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#一整体架构设计">一、整体架构设计</a>
+      <ul>
+        <li><a href="#关键选型">关键选型</a></li>
+      </ul>
+    </li>
+    <li><a href="#二分步实现指南">二、分步实现指南</a>
+      <ul>
+        <li><a href="#第一步搭建个人博客以-hugo-为例最快上手">第一步：搭建个人博客（以 Hugo 为例，最快上手）</a></li>
+        <li><a href="#第二步统一内容源与格式兼容">第二步：统一内容源与格式兼容</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+
+
+
+    </div>
+  </aside>
+  
+ 
+  </main>
+
+  
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
